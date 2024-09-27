@@ -14,5 +14,3 @@
 Пример выполнения:
 input: Hello, its my page: http://localhost123.com See you
 Output: Hello, its my page: http://**************** See you
-
-Решение залить на гитхаб, создать отдельную ветку и прислать пулл реквест

@@ -10,7 +10,6 @@ func maskLinks(message string) string {
 	messageToBytes := []byte(message)
 	// Создаем новый байтовый срез для буфера
 	buffer := make([]byte, 0, len(messageToBytes))
-
 	// Ищем ссылки и маскируем их
 	for i := 0; i < len(messageToBytes); i++ {
 		// Проверяем, начинается ли с "http://"
