@@ -1,39 +1,35 @@
 package main
 
 import (
-	"bytes"
-	"fmt"
+    "fmt"
 )
 
 func maskLinks(message string) string {
-	// Преобразуем строку в байты
-	messageToBytes := []byte(message)
-	// Создаем новый байтовый срез для буфера
-	buffer := make([]byte, 0, len(messageToBytes))
-	// Ищем ссылки и маскируем их
-	for i := 0; i < len(messageToBytes); i++ {
-		// Проверяем, начинается ли с "http://"
-		if i+7 <= len(messageToBytes) && bytes.Equal(messageToBytes[i:i+7], []byte("http://")) {
-			// Добавляем "http://" в буфер
-			buffer = append(buffer, messageToBytes[i:i+7]...)
-			i += 6 // Пропускаем "http://"
-			// Находим конец ссылки (пробел или конец строки)
-			for i < len(messageToBytes) && messageToBytes[i] != ' ' {
-				buffer = append(buffer, '*') // Заменяем на звёздочку
-				i++
-			}
-			// В этом месте цикл продолжится, но i уже указывает на следующее значение
-			continue
-		}
-		// Если это не ссылка, то просто добавляем байт
-		buffer = append(buffer, messageToBytes[i])
-	}
-	// Преобразуем буфер обратно в строку и возвращаем
-	return string(buffer)
+    // Создаем новый байтовый срез на основе входного сообщения
+    buffer := []byte(message)
+    // Ищем начало ссылки
+    for i := 0; i < len(buffer); i++ {
+        // Проверяем, начинается ли ссылка с "http://"
+        if i+7 < len(buffer) && string(buffer[i:i+7]) == "http://" {
+            // Найдем конец ссылки
+            j := i + 7
+            for j < len(buffer) && (buffer[j] != ' ' && buffer[j] != '>') {
+                j++
+            }
+            // Маскируем ссылку символами '*'
+            for k := i + 7; k < j; k++ {
+                buffer[k] = '*'
+            }
+            // Перемещаем индекс i в конец найденной ссылки
+            i = j - 1
+        }
+    }
+    // Возвращаем результирующее сообщение
+    return string(buffer)
 }
 
 func main() {
-	message := "Hello, its my page: http://localhost123.com See you"
-	maskedMessage := maskLinks(message)
-	fmt.Println(maskedMessage)
+    input := "Hello, its my page: http://localhost123.com See you"
+    output := maskLinks(input)
+    fmt.Println(output)
 }
